@@ -25,9 +25,9 @@ cap = cv2.VideoCapture(0)
 
 # Variable
 mensaje = "ALERTA"
-tiempo = 0
-inicio = 0
 fin = 0
+inicio = 0
+
 # funcion dibujo
 
 
@@ -84,17 +84,31 @@ with mp_face_mesh.FaceMesh(
                 mar_boquita = boquita_aspect_ratio(coordinates_boquita)
                 ear = (ear_left_eye+ear_right_eye)/2
                 mar = mar_boquita
-                print("MAR:", mar)
+                # print("MAR:", mar)
                 # print("EAR izquierdo:", ear_left_eye,
                 # "EAR derecho:", ear_right_eye)
                 # print("EAR: ", ear)
                 # OJOS CERRADOS O MEDIOS CERRADOS
+                # count time when eyes are closed for more than 3 seconds and then alert
 
                 if ear < EAR_THRESH:
+                    inicio = time.time()
+                    # print("Inicio:", inicio)
+                elif ear > EAR_THRESH:
+                    fin = time.time()
+                    # print("Fin:", fin)
+
+                tiempo = round(inicio-fin, 0)
+                print("Tiempo:", tiempo)
+                if tiempo > 3:
                     cv2.putText(frame, mensaje, (300, 60),
                                 cv2.FONT_HERSHEY_TRIPLEX, 1, (255, 0, 0), 3)
 
-                    # print("Inicio:", inicio)
+                # if ear < EAR_THRESH:
+                # cv2.putText(frame, mensaje, (300, 60),
+                # cv2.FONT_HERSHEY_TRIPLEX, 1, (255, 0, 0), 3)
+
+                # print("Inicio:", inicio)
                 # BOCA ABIERTA
                 if mar > MAR_THRESH:
                     cv2.putText(frame, mensaje, (300, 60),
